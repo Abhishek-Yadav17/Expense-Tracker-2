@@ -1,13 +1,19 @@
 import User from "../models/User.js"
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
+import { validationResult } from "express-validator"
 
 export const register = async (req, res) => {
+  const errors = validationResult(req)
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ message: errors.array()[0].msg })
+  }
+
   const { name, email, password1 } = req.body
 
   const existingUser = await User.findOne({ email })
   if (existingUser) {
-    return res.status(400).json({ message: "User exists" })
+    return res.status(400).json({ message: "Email already registered" })
   }
 
   const hashedPassword = await bcrypt.hash(password1, 10)

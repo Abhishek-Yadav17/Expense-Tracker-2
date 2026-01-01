@@ -6,6 +6,7 @@ import PrivateRoutes from "./utils/PrivateRoutes"
 import Login from "./pages/Auth/Login"
 import Register from "./pages/Auth/Register"
 import Home from "./pages/Dashboard/Home"
+import { Toaster } from "react-hot-toast"
 
 const App = () => {
   const dispatch = useDispatch()
@@ -15,14 +16,17 @@ const App = () => {
   }, [dispatch])
 
   return (
-    <Routes>
-      <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
+    <>
+      <Toaster position="top-center" />
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
 
-      <Route element={<PrivateRoutes />}>
-        <Route path="/" element={<Home />} />
-      </Route>
-    </Routes>
+        <Route element={<PrivateRoutes />}>
+          <Route path="/" element={<Home />} />
+        </Route>
+      </Routes>
+    </>
   )
 }
 

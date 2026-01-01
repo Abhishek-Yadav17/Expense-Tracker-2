@@ -1,6 +1,7 @@
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { showSuccess, showError } from "../../../utils/toast"
 
 const schema = z.object({
   type: z.enum(["income", "expense"], {
@@ -28,14 +29,19 @@ const TransactionModal = ({ open, onClose, onSubmit }) => {
   if (!open) return null
 
   const submit = async (data) => {
-    await onSubmit(data)
-    reset()
-    onClose()
+    try {
+      await onSubmit(data)
+      showSuccess("Transaction added")
+      reset()
+      onClose()
+    } catch {
+      showError("Failed to add transaction")
+    }
   }
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
-      <div className="bg-white w-full max-w-md rounded-2xl shadow-xl p-6">
+      <div className="bg-white w-full max-w-md rounded-2xl shadow-xl p-6 bg-[#FAF7F4]">
         <h2 className="text-lg font-semibold mb-6 text-gray-900">
           Add Transaction
         </h2>
@@ -117,7 +123,10 @@ const TransactionModal = ({ open, onClose, onSubmit }) => {
               disabled={isSubmitting}
               className="flex-1 rounded-lg bg-black text-white py-2 text-sm hover:bg-gray-900 transition disabled:opacity-60"
             >
-              Add
+              {isSubmitting && (
+                <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              )}
+              {isSubmitting ? "Adding..." : "Add"}
             </button>
           </div>
         </form>
